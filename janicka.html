@@ -298,15 +298,28 @@
         }
 
         [...bets].reverse().forEach(bet => {
+            // Oprava pro datum odeslání ze starých dat
             let displayTime = bet.time;
-            if (typeof displayTime === 'string' && displayTime.includes('1899')) displayTime = "Před chvílí";
+            if (typeof displayTime === 'string' && displayTime.includes('1899')) {
+                const timeMatch = displayTime.match(/T(\d{2}:\d{2})/);
+                displayTime = timeMatch ? "Dnes v " + timeMatch[1] : "Před chvílí";
+            }
+
+            // Oprava pro čas narození ze starých dat
+            let mBTime = bet.birthTime || "?";
+            if (typeof mBTime === 'string' && mBTime.includes('1899')) {
+                const timeMatch = mBTime.match(/T(\d{2}:\d{2})/);
+                mBTime = timeMatch ? timeMatch[1] : "?";
+            }
+            if (mBTime !== "?" && !mBTime.includes('hod')) {
+                mBTime += " hod.";
+            }
 
             const card = document.createElement('div');
             card.className = 'bet-card';
             
             const mMonth = bet.month || "?";
             const mLength = bet.length ? bet.length + " cm" : "?";
-            const mBTime = bet.birthTime || "?";
             const mMom = bet.momWeight ? bet.momWeight + " kg" : "?";
             const mLooks = bet.looks || "?";
             const mHair = bet.hair || "?";
@@ -357,18 +370,22 @@
         submitBtn.disabled = true;
         submitBtn.innerText = "Odesílám tip... 📡";
 
-        // Vytvoříme si aktuální datum a čas ve formátu např. "12. 9. 2024 v 16:45"
+        // Vynucení čistého textu u času odeslání
         const now = new Date();
-        const submitDateTime = now.toLocaleDateString('cs-CZ') + ' v ' + now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+        const submitDateTime = "Dne " + now.toLocaleDateString('cs-CZ') + ' v ' + now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+
+        // Vynucení čistého textu u času narození
+        const rawBirthTime = document.getElementById('birthTime').value;
+        const safeBirthTime = rawBirthTime ? rawBirthTime + " hod." : "";
 
         const newBet = {
             name: document.getElementById('name').value,
             gender: document.getElementById('gender').value,
             weight: document.getElementById('weight').value,
-            time: submitDateTime, // Uloží se přesné datum a čas kliknutí na tlačítko odeslat
+            time: submitDateTime, 
             month: document.getElementById('month').value,
             length: document.getElementById('length').value,
-            birthTime: document.getElementById('birthTime').value,
+            birthTime: safeBirthTime, 
             momWeight: document.getElementById('momWeight').value,
             looks: document.getElementById('looks').value,
             hair: document.getElementById('hair').value,
