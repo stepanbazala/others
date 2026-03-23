@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sázka: Janiččino miminko</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fcf8e3;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            border-top: 8px solid #ffb6c1;
+            border-bottom: 8px solid #add8e6;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ff8c00;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ffb6c1;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ffd700;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #ffc107;
+            transform: translateY(-2px);
+        }
+        
+        .bets-board {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+        .bet-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            width: calc(50% - 10px);
+            min-width: 250px;
+            border-left: 5px solid #ffd700;
+            animation: popIn 0.5s ease-out;
+        }
+        .bet-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 5px;
+        }
+        .bet-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            width: 100%;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>👶 Velká týmová sázka 🍼</h1>
+    <p class="subtitle">Zapiš svůj tip! Kdo prohraje, kupuje chlebíčky.</p>
+
+    <form id="betForm">
+        <div class="form-group">
+            <label for="name">Kdo sází? (Tvé jméno) 🕵️</label>
+            <input type="text" id="name" required placeholder="Např. Karel z IT">
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Pohlaví miminka 🎀 / 🏎️</label>
+            <select id="gender" required>
+                <option value="" disabled selected>Vyber...</option>
+                <option value="Holčička 🎀">Holčička 🎀</option>
+                <option value="Chlapeček 🏎️">Chlapeček 🏎️</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="weight">Porodní váha (v gramech) ⚖️</label>
+            <input type="number" id="weight" required placeholder="Např. 3450">
+        </div>
+
+        <button type="submit" id="submitBtn">Odeslat do vesmíru! 🚀</button>
+    </form>
+</div>
+
+<h2>📋 Zeď týmových tipů</h2>
+<div class="bets-board" id="betsBoard">
+    <div class="loading">Načítám sázky z tabulky... ⏳</div>
+</div>
+
+<script>
+    // SEM VLOŽ URL ADRESU Z GOOGLE APPS SCRIPTU Z KROKU 3 !!!
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS6_E7OyWY7qyFRb-hpehLNc-myLmtpSxgYV8ryct5fKiCYHOeYWFCM7qvAFn5r7Ox/exec'; 
+
+    let bets = [];
+    const betsBoard = document.getElementById('betsBoard');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Funkce pro vykreslení sázek
+    function renderBets() {
+        betsBoard.innerHTML = '';
+        if (bets.length === 0) {
+            betsBoard.innerHTML = '<p class="loading">Zatím tu je prázdno. Buď první odvážlivec!</p>';
+            return;
+        }
+
+        // Vykreslujeme odzadu, aby byly nejnovější nahoře
+        [...bets].reverse().forEach(bet => {
+            const card = document.createElement('div');
+            card.className = 'bet-card';
+            card.innerHTML = `
+                <h3>${bet.name} si myslí:</h3>
+                <p><strong>Pohlaví:</strong> ${bet.gender}</p>
+                <p><strong>Váha:</strong> ${bet.weight} g</p>
+                <p style="margin-top: 10px; font-size: 12px; color: #999;">Tipováno: ${bet.time}</p>
+            `;
+            if (bet.gender && bet.gender.includes('Holčička')) card.style.borderLeftColor = '#ffb6c1';
+            if (bet.gender && bet.gender.includes('Chlapeček')) card.style.borderLeftColor = '#add8e6';
+            
+            betsBoard.appendChild(card);
+        });
+    }
+
+    // Načtení sázek po otevření stránky
+    function loadBets() {
+        fetch(SCRIPT_URL)
+            .then(response => response.json())
+            .then(data => {
+                bets = data;
+                renderBets();
+            })
+            .catch(error => {
+                console.error('Chyba při načítání:', error);
+                betsBoard.innerHTML = '<p style="color: red;">Nepodařilo se načíst sázky z tabulky.</p>';
+            });
+    }
+
+    // Odeslání formuláře
+    document.getElementById('betForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
+        
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Odesílám... 📡";
+
+        const newBet = {
+            name: document.getElementById('name').value,
+            gender: document.getElementById('gender').value,
+            weight: document.getElementById('weight').value,
+            time: new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+        };
+
+        // Odeslání dat do tabulky
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(newBet),
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8" // Používáme text/plain kvůli CORS omezení u Googlu
+            }
+        })
+        .then(response => {
+            // 🎆 Spuštění konfet!
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            // Přidáme sázku do seznamu a překreslíme
+            bets.push(newBet);
+            renderBets();
+            
+            // Vyčištění a obnova formuláře
+            document.getElementById('betForm').reset();
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Odeslat do vesmíru! 🚀";
+        })
+        .catch(error => {
+            console.error('Chyba při ukládání:', error);
+            alert("Něco se pokazilo, zkus to znovu.");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Odeslat do vesmíru! 🚀";
+        });
+    });
+
+    // Spustíme načítání dat ihned při otevření stránky
+    if(SCRIPT_URL !== 'TVOJE_ZKOPIROVANA_URL_ADRESA') {
+        loadBets();
+    } else {
+        betsBoard.innerHTML = '<p style="color: red;">Nezapomeň vložit URL adresu do HTML kódu (řádek 151)!</p>';
+    }
+</script>
+
+</body>
+</html>
