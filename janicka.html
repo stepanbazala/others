@@ -17,9 +17,7 @@
             --stin: 0 10px 25px rgba(0,0,0,0.08);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -33,13 +31,12 @@
             padding: 30px 15px;
         }
 
-        /* Hlavní kontejner formuláře */
         .container {
             background-color: var(--barva-kontejner);
             padding: 30px;
             border-radius: 20px;
             box-shadow: var(--stin);
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
             border-top: 8px solid var(--barva-ruzova);
             border-bottom: 8px solid var(--barva-modra);
@@ -48,171 +45,87 @@
             z-index: 10;
         }
 
-        h1, h2, h3 {
-            text-align: center;
-            color: var(--barva-hlavni);
-            margin-top: 0;
-        }
-
+        h1, h2, h3 { text-align: center; color: var(--barva-hlavni); margin-top: 0; }
         h1 { font-size: 1.8rem; }
         h2 { font-size: 1.5rem; margin-bottom: 15px; }
 
-        p.subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
+        p.subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 0.95rem; }
 
-        /* Styly formuláře */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.9rem; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .full-width { grid-column: 1 / -1; }
+
+        .form-group { margin-bottom: 5px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.85rem; }
         input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            font-size: 16px; /* Zabraňuje zoomu na iOS */
-            transition: border-color 0.3s;
-            background-color: #fafafa;
+            width: 100%; padding: 10px; border: 2px solid #eee; border-radius: 10px;
+            font-size: 16px; transition: border-color 0.3s; background-color: #fafafa;
         }
         input:focus, select:focus { outline: none; border-color: var(--barva-ruzova); background-color: #fff; }
         
         button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--barva-zlata);
-            color: var(--barva-pismo);
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            margin-top: 10px;
+            width: 100%; padding: 15px; background-color: var(--barva-zlata); color: var(--barva-pismo);
+            border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s; margin-top: 20px;
         }
         button:hover { background-color: #ffc107; transform: translateY(-2px); }
         button:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
 
-        /* STATISTICKÉ OKÉNKO */
         .stats-container {
-            max-width: 800px;
-            width: 100%;
-            background: var(--barva-kontejner);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: var(--stin);
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            max-width: 800px; width: 100%; background: var(--barva-kontejner); border-radius: 20px;
+            padding: 25px; box-shadow: var(--stin); margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px;
         }
 
-        .stat-card {
-            flex: 1 1 calc(50% - 10px);
-            min-width: 280px;
-            text-align: center;
-        }
+        .stat-card { flex: 1 1 calc(50% - 10px); min-width: 280px; text-align: center; }
 
-        /* Graf pohlaví - CSS teploměr */
-        .gender-chart-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
+        .gender-chart-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
         .gender-label { font-size: 1.2rem; font-weight: bold; width: 45px; }
         .gender-label.pink { color: #d48e99; }
         .gender-label.blue { color: #8eb4d4; }
 
         .progress-bar-bg {
-            flex-grow: 1;
-            height: 25px;
-            background-color: #eee;
-            border-radius: 12.5px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            flex-grow: 1; height: 25px; background-color: #eee; border-radius: 12.5px; overflow: hidden; position: relative;
         }
         .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--barva-ruzova) 0%, var(--barva-modra) 100%);
-            width: 50%;
-            transition: width 1s ease-out;
-            border-radius: 12.5px;
-            position: relative;
+            height: 100%; background: linear-gradient(90deg, var(--barva-ruzova) 0%, var(--barva-modra) 100%);
+            width: 50%; transition: width 1s ease-out; border-radius: 12.5px;
         }
         .progress-bar-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 2px;
-            height: 100%;
-            background: rgba(255,255,255,0.6);
-            z-index: 2;
+            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(255,255,255,0.6); z-index: 2;
         }
 
-        /* Graf váhy - Číselné průměry */
-        .weight-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
+        .weight-stats { display: flex; justify-content: space-around; margin-top: 15px; }
         .weight-stat-item { text-align: center; }
         .weight-value { font-size: 2rem; font-weight: bold; color: var(--barva-hlavni); }
-        .weight-unit { font-size: 1rem; color: #666; }
-        .weight-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .weight-unit { font-size: 0.9rem; color: #666; }
+        .weight-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Sekce pro výpis sázek */
-        .bets-board {
-            max-width: 800px;
-            width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
+        .bets-board { max-width: 900px; width: 100%; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        
         .bet-card {
-            background: var(--barva-kontejner);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
-            width: calc(50% - 8px);
-            min-width: 260px;
-            border-left: 5px solid var(--barva-zlata);
-            animation: popIn 0.5s ease-out;
+            background: var(--barva-kontejner); padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+            width: calc(50% - 8px); min-width: 300px; border-left: 5px solid var(--barva-zlata); animation: popIn 0.5s ease-out;
         }
-        .bet-card h3 {
-            margin: 0 0 8px 0;
-            color: #333;
-            border-bottom: 2px dashed #eee;
-            padding-bottom: 5px;
-            font-size: 1rem;
-            text-align: left;
-        }
-        .bet-card p { margin: 4px 0; font-size: 0.9rem; }
+        .bet-card h3 { margin: 0 0 10px 0; color: #333; border-bottom: 2px dashed #eee; padding-bottom: 5px; font-size: 1.1rem; text-align: left; }
+        
+        .bet-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; margin-bottom: 10px;}
+        .bet-details p { margin: 0; }
+        .bet-details strong { color: #555; }
+        
+        .fun-fact { background: #f9f9f9; padding: 8px; border-radius: 8px; font-size: 0.85rem; font-style: italic; color: #666; margin-top: 5px;}
+
         .loading { text-align: center; color: #666; font-style: italic; width: 100%; padding: 20px; }
         
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* --- MOBILNÍ OPTIMALIZACE (RESPONZIVITA) --- */
         @media (max-width: 600px) {
-            body { padding: 15px 10px; }
-            .container { padding: 20px; margin-bottom: 20px; }
-            h1 { font-size: 1.5rem; }
-            
+            .form-grid { grid-template-columns: 1fr; gap: 10px; }
             .stats-container { padding: 15px; gap: 15px; flex-direction: column; }
             .stat-card { min-width: 100%; }
-            
             .bet-card { width: 100%; min-width: unset; }
-            
-            .weight-value { font-size: 1.5rem; }
-            .gender-label { font-size: 1rem; width: 40px; }
         }
     </style>
 </head>
@@ -223,23 +136,73 @@
     <p class="subtitle">Zapiš svůj tip pro Janičku! Kdo prohraje, kupuje chlebíčky.</p>
 
     <form id="betForm">
-        <div class="form-group">
-            <label for="name">Kdo sází? (Tvé jméno) 🕵️</label>
-            <input type="text" id="name" required placeholder="Např. Karel z IT">
-        </div>
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="name">Kdo sází? (Tvé jméno) 🕵️</label>
+                <input type="text" id="name" required placeholder="Např. Karel z IT">
+            </div>
 
-        <div class="form-group">
-            <label for="gender">Pohlaví miminka 🎀 / 🏎️</label>
-            <select id="gender" required>
-                <option value="" disabled selected>Vyber...</option>
-                <option value="Holčička 🎀">Holčička 🎀</option>
-                <option value="Chlapeček 🏎️">Chlapeček 🏎️</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="gender">Pohlaví miminka 🎀/🏎️</label>
+                <select id="gender" required>
+                    <option value="" disabled selected>Vyber...</option>
+                    <option value="Holčička">Holčička 🎀</option>
+                    <option value="Chlapeček">Chlapeček 🏎️</option>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="weight">Porodní váha (v gramech) ⚖️</label>
-            <input type="number" id="weight" required placeholder="Např. 3450" min="1000" max="6000">
+            <div class="form-group">
+                <label for="month">Termín porodu 📅</label>
+                <select id="month" required>
+                    <option value="" disabled selected>Vyber...</option>
+                    <option value="Srpen">Srpen</option>
+                    <option value="Září">Září</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Váha miminka (v gramech) ⚖️</label>
+                <input type="number" id="weight" required placeholder="Např. 3450">
+            </div>
+
+            <div class="form-group">
+                <label for="length">Délka miminka (v cm) 📏</label>
+                <input type="number" id="length" required placeholder="Např. 50">
+            </div>
+
+            <div class="form-group">
+                <label for="birthTime">Přesný čas narození ⏰</label>
+                <input type="time" id="birthTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="momWeight">Váha maminky před porodem (kg) 🤰</label>
+                <input type="number" id="momWeight" required placeholder="Např. 75">
+            </div>
+
+            <div class="form-group">
+                <label for="looks">Na koho bude víc podobné? 👨‍👩‍👦</label>
+                <select id="looks" required>
+                    <option value="" disabled selected>Vyber...</option>
+                    <option value="Na maminku">Na maminku</option>
+                    <option value="Na tatínka">Na tatínka</option>
+                    <option value="Na pošťáka">Na pošťáka 🤫</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hair">Víc vlasů než tatínek? 💇‍♂️</label>
+                <select id="hair" required>
+                    <option value="" disabled selected>Vyber...</option>
+                    <option value="Ano">Rozhodně Ano!</option>
+                    <option value="Ne">Ne, bude plešounek</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="hunger">Za jak dlouho po porodu bude mít Janička hlad? 🍕</label>
+                <input type="text" id="hunger" required placeholder="Např. Hned na sále / Za 2 hodiny...">
+            </div>
         </div>
 
         <button type="submit" id="submitBtn">Odeslat do vesmíru! 🚀</button>
@@ -264,20 +227,17 @@
     </div>
 
     <div class="stat-card">
-        <h3>Odhadovaná váha</h3>
+        <h3>Týmový průměr</h3>
         <div class="weight-stats">
             <div class="weight-stat-item">
                 <div class="weight-value" id="avgWeight">0</div>
                 <div class="weight-unit">gramů</div>
-                <div class="weight-label">Průměr</div>
+                <div class="weight-label">Váha</div>
             </div>
             <div class="weight-stat-item">
-                <div class="weight-value" id="minWeight" style="font-size: 1.2rem; color: #888; margin-top:10px;">0</div>
-                <div class="weight-label">Nejméně</div>
-            </div>
-            <div class="weight-stat-item">
-                <div class="weight-value" id="maxWeight" style="font-size: 1.2rem; color: #888; margin-top:10px;">0</div>
-                <div class="weight-label">Nejvíce</div>
+                <div class="weight-value" id="avgLength" style="color: #4CAF50;">0</div>
+                <div class="weight-unit">cm</div>
+                <div class="weight-label">Délka</div>
             </div>
         </div>
     </div>
@@ -285,11 +245,10 @@
 
 <h2>📋 Zeď týmových tipů</h2>
 <div class="bets-board" id="betsBoard">
-    <div class="loading">Načítám sázky z tabulky a počítám statistiky... ⏳</div>
+    <div class="loading">Načítám sázky z tabulky... ⏳</div>
 </div>
 
 <script>
-    // TVOJE URL ADRESA JE TEĎ PEVNĚ VLOŽENÁ ZDE:
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS6_E7OyWY7qyFRb-hpehLNc-myLmtpSxgYV8ryct5fKiCYHOeYWFCM7qvAFn5r7Ox/exec'; 
 
     let bets = [];
@@ -297,51 +256,40 @@
     const submitBtn = document.getElementById('submitBtn');
     const statsContainer = document.getElementById('statsContainer');
 
-    // Funkce pro výpočet a aktualizaci statistik
     function updateStatistics() {
         if (bets.length === 0) return;
-
         statsContainer.style.display = 'flex';
         
-        let countHolka = 0;
-        let countKluk = 0;
-        let totalWeight = 0;
-        let minW = 10000;
-        let maxW = 0;
+        let countHolka = 0, countKluk = 0;
+        let totalWeight = 0, totalLength = 0;
+        let validWeightCount = 0, validLengthCount = 0;
 
         bets.forEach(bet => {
-            if (bet.gender && bet.gender.includes('Holčička')) countHolka++;
-            if (bet.gender && bet.gender.includes('Chlapeček')) countKluk++;
+            if (bet.gender === 'Holčička') countHolka++;
+            if (bet.gender === 'Chlapeček') countKluk++;
 
             let w = parseInt(bet.weight);
-            if (!isNaN(w)) {
-                totalWeight += w;
-                if (w < minW) minW = w;
-                if (w > maxW) maxW = w;
-            }
+            if (!isNaN(w)) { totalWeight += w; validWeightCount++; }
+
+            let l = parseInt(bet.length);
+            if (!isNaN(l)) { totalLength += l; validLengthCount++; }
         });
 
         const total = bets.length;
         document.getElementById('totalBetsCount').innerText = total;
 
-        if (total > 0) {
-            const perHolka = Math.round((countHolka / total) * 100);
-            const perKluk = 100 - perHolka;
-
+        let totalGender = countHolka + countKluk;
+        if (totalGender > 0) {
+            const perHolka = Math.round((countHolka / totalGender) * 100);
             document.getElementById('pinkPercent').innerText = perHolka + '%';
-            document.getElementById('bluePercent').innerText = perKluk + '%';
+            document.getElementById('bluePercent').innerText = (100 - perHolka) + '%';
             document.getElementById('genderBarFill').style.width = perHolka + '%';
         }
 
-        if (totalWeight > 0) {
-            const avgW = Math.round(totalWeight / total);
-            document.getElementById('avgWeight').innerText = avgW;
-            document.getElementById('minWeight').innerText = minW === 10000 ? 0 : minW;
-            document.getElementById('maxWeight').innerText = maxW;
-        }
+        if (validWeightCount > 0) document.getElementById('avgWeight').innerText = Math.round(totalWeight / validWeightCount);
+        if (validLengthCount > 0) document.getElementById('avgLength').innerText = Math.round(totalLength / validLengthCount);
     }
 
-    // Funkce pro vykreslení sázek
     function renderBets() {
         betsBoard.innerHTML = '';
         if (bets.length === 0) {
@@ -350,24 +298,47 @@
         }
 
         [...bets].reverse().forEach(bet => {
+            let displayTime = bet.time;
+            if (typeof displayTime === 'string' && displayTime.includes('1899')) displayTime = "Před chvílí";
+
             const card = document.createElement('div');
             card.className = 'bet-card';
+            
+            // Ošetření prázdných hodnot ze starých sázek
+            const mMonth = bet.month || "?";
+            const mLength = bet.length ? bet.length + " cm" : "?";
+            const mBTime = bet.birthTime || "?";
+            const mMom = bet.momWeight ? bet.momWeight + " kg" : "?";
+            const mLooks = bet.looks || "?";
+            const mHair = bet.hair || "?";
+            const mHunger = bet.hunger || "?";
+
             card.innerHTML = `
-                <h3>${bet.name} si myslí:</h3>
-                <p><strong>Pohlaví:</strong> ${bet.gender}</p>
-                <p><strong>Váha:</strong> ${bet.weight} g</p>
-                <p style="margin-top: 8px; font-size: 0.75rem; color: #999;">Tipováno: ${bet.time}</p>
+                <h3>${bet.name} tipuje:</h3>
+                <div class="bet-details">
+                    <p><strong>Pohlaví:</strong> ${bet.gender || "?"}</p>
+                    <p><strong>Měsíc:</strong> ${mMonth}</p>
+                    <p><strong>Váha:</strong> ${bet.weight || "?"} g</p>
+                    <p><strong>Délka:</strong> ${mLength}</p>
+                    <p><strong>Čas narození:</strong> ${mBTime}</p>
+                    <p><strong>Váha Janičky:</strong> ${mMom}</p>
+                </div>
+                <div class="fun-fact">
+                    👱 Podoba: <strong>${mLooks}</strong><br>
+                    💇‍♂️ Víc vlasů než táta: <strong>${mHair}</strong><br>
+                    🍕 Hlad se dostaví: <strong>${mHunger}</strong>
+                </div>
+                <p style="margin-top: 8px; font-size: 0.7rem; color: #aaa; text-align:right;">Odesláno: ${displayTime}</p>
             `;
             
-            // Obarvení proužku podle pohlaví
-            if (bet.gender && bet.gender.includes('Holčička')) card.style.borderLeftColor = '#ffb6c1';
-            if (bet.gender && bet.gender.includes('Chlapeček')) card.style.borderLeftColor = '#add8e6';
+            if (bet.gender === 'Holčička') card.style.borderLeftColor = '#ffb6c1';
+            else if (bet.gender === 'Chlapeček') card.style.borderLeftColor = '#add8e6';
+            else card.style.borderLeftColor = '#ccc'; // Pro staré sázky bez pohlaví
             
             betsBoard.appendChild(card);
         });
     }
 
-    // Načtení sázek ze serveru
     function loadBets() {
         fetch(SCRIPT_URL)
             .then(response => response.json())
@@ -377,15 +348,13 @@
                 updateStatistics();
             })
             .catch(error => {
-                console.error('Chyba při načítání:', error);
+                console.error('Chyba:', error);
                 betsBoard.innerHTML = '<p style="color: #d48e99; text-align:center; width:100%;">Nepodařilo se načíst sázky z tabulky.</p>';
             });
     }
 
-    // Odeslání formuláře
     document.getElementById('betForm').addEventListener('submit', function(e) {
         e.preventDefault(); 
-        
         submitBtn.disabled = true;
         submitBtn.innerText = "Odesílám tip... 📡";
 
@@ -393,7 +362,15 @@
             name: document.getElementById('name').value,
             gender: document.getElementById('gender').value,
             weight: document.getElementById('weight').value,
-            time: new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
+            time: new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }) + ' hod.',
+            // Nová pole
+            month: document.getElementById('month').value,
+            length: document.getElementById('length').value,
+            birthTime: document.getElementById('birthTime').value,
+            momWeight: document.getElementById('momWeight').value,
+            looks: document.getElementById('looks').value,
+            hair: document.getElementById('hair').value,
+            hunger: document.getElementById('hunger').value
         };
 
         fetch(SCRIPT_URL, {
@@ -401,7 +378,7 @@
             body: JSON.stringify(newBet),
             headers: { "Content-Type": "text/plain;charset=utf-8" }
         })
-        .then(response => {
+        .then(() => {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             bets.push(newBet);
             renderBets();
@@ -411,14 +388,13 @@
             submitBtn.innerText = "Odeslat do vesmíru! 🚀";
         })
         .catch(error => {
-            console.error('Chyba při ukládání:', error);
+            console.error('Chyba:', error);
             alert("Něco se pokazilo, zkus to znovu.");
             submitBtn.disabled = false;
             submitBtn.innerText = "Odeslat do vesmíru! 🚀";
         });
     });
 
-    // Spuštění po načtení stránky
     loadBets();
 </script>
 
