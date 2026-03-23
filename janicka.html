@@ -2,122 +2,217 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sázka: Janiččino miminko</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        :root {
+            --barva-pozadi: #fcf8e3;
+            --barva-pismo: #333;
+            --barva-kontejner: #ffffff;
+            --barva-hlavni: #ff8c00;
+            --barva-ruzova: #ffb6c1;
+            --barva-modra: #add8e6;
+            --barva-zlata: #ffd700;
+            --stin: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fcf8e3;
-            color: #333;
+            background-color: var(--barva-pozadi);
+            color: var(--barva-pismo);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px 15px;
         }
+
+        /* Hlavní kontejner formuláře */
         .container {
-            background-color: #ffffff;
-            padding: 40px;
+            background-color: var(--barva-kontejner);
+            padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--stin);
             max-width: 500px;
             width: 100%;
-            border-top: 8px solid #ffb6c1;
-            border-bottom: 8px solid #add8e6;
-            margin-bottom: 40px;
+            border-top: 8px solid var(--barva-ruzova);
+            border-bottom: 8px solid var(--barva-modra);
+            margin-bottom: 30px;
             position: relative;
             z-index: 10;
         }
-        h1, h2 {
+
+        h1, h2, h3 {
             text-align: center;
-            color: #ff8c00;
+            color: var(--barva-hlavni);
+            margin-top: 0;
         }
+
+        h1 { font-size: 1.8rem; }
+        h2 { font-size: 1.5rem; margin-bottom: 15px; }
+
         p.subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
-        }
+
+        /* Styly formuláře */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.9rem; }
         input, select {
             width: 100%;
             padding: 12px;
             border: 2px solid #eee;
             border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
+            font-size: 16px; /* Zabraňuje zoomu na iOS */
+            transition: border-color 0.3s;
+            background-color: #fafafa;
         }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #ffb6c1;
-        }
+        input:focus, select:focus { outline: none; border-color: var(--barva-ruzova); background-color: #fff; }
+        
         button {
             width: 100%;
             padding: 15px;
-            background-color: #ffd700;
-            color: #333;
+            background-color: var(--barva-zlata);
+            color: var(--barva-pismo);
             border: none;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.2s;
             margin-top: 10px;
         }
-        button:hover {
-            background-color: #ffc107;
-            transform: translateY(-2px);
+        button:hover { background-color: #ffc107; transform: translateY(-2px); }
+        button:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+        /* STATISTICKÉ OKÉNKO */
+        .stats-container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--barva-kontejner);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--stin);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        
+
+        .stat-card {
+            flex: 1 1 calc(50% - 10px);
+            min-width: 280px;
+            text-align: center;
+        }
+
+        /* Graf pohlaví - CSS teploměr */
+        .gender-chart-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .gender-label { font-size: 1.2rem; font-weight: bold; width: 45px; }
+        .gender-label.pink { color: #d48e99; }
+        .gender-label.blue { color: #8eb4d4; }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 25px;
+            background-color: #eee;
+            border-radius: 12.5px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--barva-ruzova) 0%, var(--barva-modra) 100%);
+            width: 50%;
+            transition: width 1s ease-out;
+            border-radius: 12.5px;
+            position: relative;
+        }
+        .progress-bar-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: rgba(255,255,255,0.6);
+            z-index: 2;
+        }
+
+        /* Graf váhy - Číselné průměry */
+        .weight-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .weight-stat-item { text-align: center; }
+        .weight-value { font-size: 2rem; font-weight: bold; color: var(--barva-hlavni); }
+        .weight-unit { font-size: 1rem; color: #666; }
+        .weight-label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Sekce pro výpis sázek */
         .bets-board {
             max-width: 800px;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
-            position: relative;
-            z-index: 10;
         }
         .bet-card {
-            background: white;
-            padding: 20px;
+            background: var(--barva-kontejner);
+            padding: 15px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            width: calc(50% - 10px);
-            min-width: 250px;
-            border-left: 5px solid #ffd700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+            width: calc(50% - 8px);
+            min-width: 260px;
+            border-left: 5px solid var(--barva-zlata);
             animation: popIn 0.5s ease-out;
         }
         .bet-card h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             color: #333;
             border-bottom: 2px dashed #eee;
             padding-bottom: 5px;
+            font-size: 1rem;
+            text-align: left;
         }
-        .bet-card p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-        .loading {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            width: 100%;
-        }
+        .bet-card p { margin: 4px 0; font-size: 0.9rem; }
+        .loading { text-align: center; color: #666; font-style: italic; width: 100%; padding: 20px; }
         
         @keyframes popIn {
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- MOBILNÍ OPTIMALIZACE (RESPONZIVITA) --- */
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .container { padding: 20px; margin-bottom: 20px; }
+            h1 { font-size: 1.5rem; }
+            
+            .stats-container { padding: 15px; gap: 15px; flex-direction: column; }
+            .stat-card { min-width: 100%; }
+            
+            .bet-card { width: 100%; min-width: unset; }
+            
+            .weight-value { font-size: 1.5rem; }
+            .gender-label { font-size: 1rem; width: 40px; }
         }
     </style>
 </head>
@@ -125,7 +220,7 @@
 
 <div class="container">
     <h1>👶 Velká týmová sázka 🍼</h1>
-    <p class="subtitle">Zapiš svůj tip! Kdo prohraje, kupuje chlebíčky.</p>
+    <p class="subtitle">Zapiš svůj tip pro Janičku! Kdo prohraje, kupuje chlebíčky.</p>
 
     <form id="betForm">
         <div class="form-group">
@@ -144,25 +239,107 @@
 
         <div class="form-group">
             <label for="weight">Porodní váha (v gramech) ⚖️</label>
-            <input type="number" id="weight" required placeholder="Např. 3450">
+            <input type="number" id="weight" required placeholder="Např. 3450" min="1000" max="6000">
         </div>
 
         <button type="submit" id="submitBtn">Odeslat do vesmíru! 🚀</button>
     </form>
 </div>
 
+<h2>📊 Týmové statistiky</h2>
+<div class="stats-container" id="statsContainer" style="display: none;">
+    <div class="stat-card">
+        <h3>Co si myslí tým?</h3>
+        <p class="weight-label">Pravděpodobnost podle sázek</p>
+        <div class="gender-chart-wrapper">
+            <div class="gender-label pink" id="pinkPercent">50%</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="genderBarFill"></div>
+            </div>
+            <div class="gender-label blue" id="bluePercent">50%</div>
+        </div>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">
+            Celkem sázek: <span id="totalBetsCount">0</span>
+        </p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Odhadovaná váha</h3>
+        <div class="weight-stats">
+            <div class="weight-stat-item">
+                <div class="weight-value" id="avgWeight">0</div>
+                <div class="weight-unit">gramů</div>
+                <div class="weight-label">Průměr</div>
+            </div>
+            <div class="weight-stat-item">
+                <div class="weight-value" id="minWeight" style="font-size: 1.2rem; color: #888; margin-top:10px;">0</div>
+                <div class="weight-label">Nejméně</div>
+            </div>
+            <div class="weight-stat-item">
+                <div class="weight-value" id="maxWeight" style="font-size: 1.2rem; color: #888; margin-top:10px;">0</div>
+                <div class="weight-label">Nejvíce</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h2>📋 Zeď týmových tipů</h2>
 <div class="bets-board" id="betsBoard">
-    <div class="loading">Načítám sázky z tabulky... ⏳</div>
+    <div class="loading">Načítám sázky z tabulky a počítám statistiky... ⏳</div>
 </div>
 
 <script>
-    // SEM VLOŽ URL ADRESU Z GOOGLE APPS SCRIPTU Z KROKU 3 !!!
+    // TVOJE URL ADRESA JE TEĎ PEVNĚ VLOŽENÁ ZDE:
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzS6_E7OyWY7qyFRb-hpehLNc-myLmtpSxgYV8ryct5fKiCYHOeYWFCM7qvAFn5r7Ox/exec'; 
 
     let bets = [];
     const betsBoard = document.getElementById('betsBoard');
     const submitBtn = document.getElementById('submitBtn');
+    const statsContainer = document.getElementById('statsContainer');
+
+    // Funkce pro výpočet a aktualizaci statistik
+    function updateStatistics() {
+        if (bets.length === 0) return;
+
+        statsContainer.style.display = 'flex';
+        
+        let countHolka = 0;
+        let countKluk = 0;
+        let totalWeight = 0;
+        let minW = 10000;
+        let maxW = 0;
+
+        bets.forEach(bet => {
+            if (bet.gender && bet.gender.includes('Holčička')) countHolka++;
+            if (bet.gender && bet.gender.includes('Chlapeček')) countKluk++;
+
+            let w = parseInt(bet.weight);
+            if (!isNaN(w)) {
+                totalWeight += w;
+                if (w < minW) minW = w;
+                if (w > maxW) maxW = w;
+            }
+        });
+
+        const total = bets.length;
+        document.getElementById('totalBetsCount').innerText = total;
+
+        if (total > 0) {
+            const perHolka = Math.round((countHolka / total) * 100);
+            const perKluk = 100 - perHolka;
+
+            document.getElementById('pinkPercent').innerText = perHolka + '%';
+            document.getElementById('bluePercent').innerText = perKluk + '%';
+            document.getElementById('genderBarFill').style.width = perHolka + '%';
+        }
+
+        if (totalWeight > 0) {
+            const avgW = Math.round(totalWeight / total);
+            document.getElementById('avgWeight').innerText = avgW;
+            document.getElementById('minWeight').innerText = minW === 10000 ? 0 : minW;
+            document.getElementById('maxWeight').innerText = maxW;
+        }
+    }
 
     // Funkce pro vykreslení sázek
     function renderBets() {
@@ -172,7 +349,6 @@
             return;
         }
 
-        // Vykreslujeme odzadu, aby byly nejnovější nahoře
         [...bets].reverse().forEach(bet => {
             const card = document.createElement('div');
             card.className = 'bet-card';
@@ -180,8 +356,10 @@
                 <h3>${bet.name} si myslí:</h3>
                 <p><strong>Pohlaví:</strong> ${bet.gender}</p>
                 <p><strong>Váha:</strong> ${bet.weight} g</p>
-                <p style="margin-top: 10px; font-size: 12px; color: #999;">Tipováno: ${bet.time}</p>
+                <p style="margin-top: 8px; font-size: 0.75rem; color: #999;">Tipováno: ${bet.time}</p>
             `;
+            
+            // Obarvení proužku podle pohlaví
             if (bet.gender && bet.gender.includes('Holčička')) card.style.borderLeftColor = '#ffb6c1';
             if (bet.gender && bet.gender.includes('Chlapeček')) card.style.borderLeftColor = '#add8e6';
             
@@ -189,17 +367,18 @@
         });
     }
 
-    // Načtení sázek po otevření stránky
+    // Načtení sázek ze serveru
     function loadBets() {
         fetch(SCRIPT_URL)
             .then(response => response.json())
             .then(data => {
                 bets = data;
                 renderBets();
+                updateStatistics();
             })
             .catch(error => {
                 console.error('Chyba při načítání:', error);
-                betsBoard.innerHTML = '<p style="color: red;">Nepodařilo se načíst sázky z tabulky.</p>';
+                betsBoard.innerHTML = '<p style="color: #d48e99; text-align:center; width:100%;">Nepodařilo se načíst sázky z tabulky.</p>';
             });
     }
 
@@ -208,7 +387,7 @@
         e.preventDefault(); 
         
         submitBtn.disabled = true;
-        submitBtn.innerText = "Odesílám... 📡";
+        submitBtn.innerText = "Odesílám tip... 📡";
 
         const newBet = {
             name: document.getElementById('name').value,
@@ -217,27 +396,16 @@
             time: new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' })
         };
 
-        // Odeslání dat do tabulky
         fetch(SCRIPT_URL, {
             method: 'POST',
             body: JSON.stringify(newBet),
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8" // Používáme text/plain kvůli CORS omezení u Googlu
-            }
+            headers: { "Content-Type": "text/plain;charset=utf-8" }
         })
         .then(response => {
-            // 🎆 Spuštění konfet!
-            confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 }
-            });
-
-            // Přidáme sázku do seznamu a překreslíme
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             bets.push(newBet);
             renderBets();
-            
-            // Vyčištění a obnova formuláře
+            updateStatistics();
             document.getElementById('betForm').reset();
             submitBtn.disabled = false;
             submitBtn.innerText = "Odeslat do vesmíru! 🚀";
@@ -250,12 +418,8 @@
         });
     });
 
-    // Spustíme načítání dat ihned při otevření stránky
-    if(SCRIPT_URL !== 'TVOJE_ZKOPIROVANA_URL_ADRESA') {
-        loadBets();
-    } else {
-        betsBoard.innerHTML = '<p style="color: red;">Nezapomeň vložit URL adresu do HTML kódu (řádek 151)!</p>';
-    }
+    // Spuštění po načtení stránky
+    loadBets();
 </script>
 
 </body>
